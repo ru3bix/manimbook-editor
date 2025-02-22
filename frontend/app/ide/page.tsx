@@ -13,6 +13,7 @@ import Preview from '@/components/notebook/preview';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ChapterSidebar } from '@/components/notebook/chapter-sidebar';
+import { verifyMBCFile } from '@/lib/utils';
 
 const DB_NAME = 'NotebookDB';
 const STORE_NAME = 'notebook';
@@ -418,6 +419,19 @@ export default function Home() {
       reader.onload = (e) => {
         try {
           const content = JSON.parse(e.target?.result as string);
+
+          if(!verifyMBCFile(content.chapters)){
+            toast("Invalid MCB File" , {
+              icon: '😭',
+              style: {
+                borderRadius: '10px',
+                background: '#282c34',
+                color: '#fff',
+              },
+            });
+            return;
+          }
+
           const chapters = content.chapters.map((chapter: any) => ({
             id: uuidv4(),
             title: chapter.title,

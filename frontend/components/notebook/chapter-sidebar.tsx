@@ -8,6 +8,7 @@ import { Button } from '../ui/button';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { SortableChapter } from '@/components/notebook/sortable-chapter';
 import { cn } from '@/lib/utils';
+import toast from 'react-hot-toast';
 
 interface ChapterSidebarProps {
   chapters: Chapter[];
@@ -49,6 +50,24 @@ export function ChapterSidebar({
       }));
       onChaptersReorder(newChapters);
     }
+  }
+
+  function onRenamePreCheck(id : string , newTitle : string){
+    
+    const names = chapters.filter((v)=>v.title===newTitle);
+
+    if(names.length > 0){
+      toast("Chapter already exists!",{
+        icon: '❗',
+        style: {
+          borderRadius: '10px',
+          background: '#282c34',
+          color: '#fff',
+        },
+      })
+      return;
+    }
+    onRenameChapter(id, newTitle);
   }
 
   return (
@@ -106,7 +125,7 @@ export function ChapterSidebar({
                 isActive={chapter.id === activeChapterId}
                 onSelect={() => onChapterSelect(chapter.id)}
                 onDelete={() => onDeleteChapter(chapter.id)}
-                onRename={(newTitle) => onRenameChapter(chapter.id, newTitle)}
+                onRename={(newTitle) => onRenamePreCheck(chapter.id, newTitle)}
                 isCollapsed={isCollapsed}
               />
             ))}

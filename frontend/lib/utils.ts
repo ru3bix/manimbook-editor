@@ -1,3 +1,4 @@
+import { Chapter } from '@/types/notebook';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,4 +18,21 @@ export const cleanErrorOutput = (output: string) => {
     ""
   );
   return cleanedOutput;
+};
+
+/**
+ * Verify's the MCB file format
+ * @param chapters List of Chapters[]
+ * @returns true if file is valid else false
+ */
+export const verifyMBCFile = (chapters : Chapter[]) => {
+  const names : string[] = [];
+  for(const chapter of chapters){
+    if(names.includes(chapter.title)){
+      return false;
+    }
+    names.push(chapter.title);
+  }
+
+  return true;
 };
