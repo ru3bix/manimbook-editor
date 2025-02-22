@@ -2,6 +2,7 @@ import io from "@/lib/io";
 
 
 const backendService = async (ipynb : string , bookId : string ) => {
+  console.log("Service working")
     const formData = new FormData();
     const notebookJson = new Blob([ipynb], {
       type: "application/json",

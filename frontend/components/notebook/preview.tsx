@@ -12,6 +12,7 @@ interface PreviewProps {
 const Preview = ({ previewUrl, frameRef, executing , error }: PreviewProps) => {
   const [progress, setProgress] = useState(0);
 
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
@@ -20,9 +21,8 @@ const Preview = ({ previewUrl, frameRef, executing , error }: PreviewProps) => {
         setProgress((prev) => (prev < 80 ? prev + 0.25 : prev));
       }, 300);
     } else {
-      // Jump to 100% when executing becomes false
       setProgress(100);
-      setTimeout(() => setProgress(0), 500); // Reset progress after a delay
+      setTimeout(() => setProgress(0), 500);
     }
 
     return () => clearInterval(interval);
