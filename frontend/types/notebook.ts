@@ -44,3 +44,5 @@ export interface Book {
   chapters: Chapter[];
   activeChapterId: string | null;
 }
+
+export type ViewId = 'preview' | 'editor' ;

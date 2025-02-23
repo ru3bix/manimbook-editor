@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { openDB, IDBPDatabase } from 'idb';
 import { Cell } from '@/components/notebook/cell';
 import { Toolbar } from '@/components/notebook/toolbar';
-import { NotebookCell, Notebook, Chapter, Book, CellContent } from '@/types/notebook';
+import { NotebookCell, Notebook, Chapter, Book, CellContent, ViewId } from '@/types/notebook';
 import { v4 as uuidv4 } from 'uuid';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,22 @@ import { ChapterSidebar } from '@/components/notebook/chapter-sidebar';
 import { readWelcomeTemplate, verifyMBCFile } from '@/lib/utils';
 import {useSearchParams} from "next/navigation";
 import { exportBook } from '@/lib/book-operations';
+import { Mosaic, MosaicWindow } from 'react-mosaic-component';
+import {Classes} from "@blueprintjs/core";
+
+import 'react-mosaic-component/react-mosaic-component.css';
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+
 
 const DB_NAME = 'NotebookDB';
 const STORE_NAME = 'notebook';
 const DB_VERSION = 2;
 
+const TITLE_MAP: Record<string, string> = {
+  "editor" : "Editor",
+  "preview" : "Preview"
+};
 
 
 const initializeDB = async (): Promise<IDBPDatabase> => {
@@ -476,7 +487,7 @@ export default function Home() {
         fileName={fileName}
         setFileName={setFileName}
       />
-      <div className="flex">
+      <div className="flex w-full">
         <ChapterSidebar
           chapters={book.chapters}
           activeChapterId={book.activeChapterId}
@@ -488,61 +499,71 @@ export default function Home() {
           onDeleteChapter={handleDeleteChapter}
           onRenameChapter={handleRenameChapter}
         />
-        <div className="flex-1 grid grid-cols-2">
-          <div className="p-4 overflow-y-auto max-h-[calc(100vh-64px)]">
-            <div className="space-y-1">
-              {activeChapter?.notebook.cells.map((cell, index) => (
-                <div key={cell.id}>
-                  <Cell
-                    cell={cell}
-                    onUpdate={updateCell}
-                    onDelete={deleteCell}
-                    onMoveUp={(id) => moveCell(id, 'up')}
-                    onMoveDown={(id) => moveCell(id, 'down')}
-                    isFirst={index === 0}
-                    isLast={
-                      index === activeChapter.notebook.cells.length - 1
-                    }
-                  />
-                  <div className="h-1 group relative">
-                    <div className="absolute inset-x-0 -top-2 h-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center">
-                      <div className="w-full flex h-px bg-gray-700" />
-                      <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => addCell('code', index)}
-                          className="h-6 min-w-[80px] bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full text-xs"
-                        >
-                          <Plus className="w-3 h-3 mr-1" />
-                          Add Code
-                        </Button>
+        <div className={`flex h-[100vh-64px] w-full bp5-dark`}>
+        <Mosaic<string>
+          className={`mosaic-blueprint-theme bp5-dark ${Classes.DARK}`}
+          renderTile={(id, path) => (
+            <MosaicWindow<string> path={path} title={TITLE_MAP[id]}>
+              {id === 'editor' ? (
+                <div className="p-4 overflow-y-auto h-full">
+                  <div className="space-y-1">
+                    {activeChapter?.notebook.cells.map((cell, index) => (
+                      <div key={cell.id}>
+                        <Cell
+                          cell={cell}
+                          onUpdate={updateCell}
+                          onDelete={deleteCell}
+                          onMoveUp={(id) => moveCell(id, 'up')}
+                          onMoveDown={(id) => moveCell(id, 'down')}
+                          isFirst={index === 0}
+                          isLast={index === activeChapter.notebook.cells.length - 1}
+                        />
+                        <div className="h-1 group relative">
+                          <div className="absolute inset-x-0 -top-2 h-4 opacity-0 group-hover:opacity-100 transition-opacity flex items-center">
+                            <div className="w-full flex h-px bg-gray-700" />
+                            <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => addCell('code', index)}
+                                className="h-6 min-w-[80px] bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full text-xs"
+                              >
+                                <Plus className="w-3 h-3 mr-1" />
+                                Add Code
+                              </Button>
 
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => addCell('markdown', index)}
-                          className="h-6 min-w-[80px] bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full text-xs"
-                        >
-                          <Plus className="w-3 h-3 mr-1" />
-                          Add Markdown
-                        </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => addCell('markdown', index)}
+                                className="h-6 min-w-[80px] bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full text-xs"
+                              >
+                                <Plus className="w-3 h-3 mr-1" />
+                                Add Markdown
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-          <div className="bg-gray-900 border-l border-gray-700 h-[calc(100vh-74px)] sticky top-[64px]">
-            <Preview
-              previewUrl={previewUrl}
-              frameRef={frameRef}
-              executing={executing}
-              error={error}
-            />
-          </div>
+              ) : (
+                <div className="bg-gray-900 border-l border-gray-700 h-[calc(100vh-74px)] sticky top-[64px]">
+                  <Preview previewUrl={previewUrl} frameRef={frameRef} executing={executing} error={error} />
+                </div>
+              )}
+            </MosaicWindow>
+          )}
+          initialValue={{
+            direction: 'row',
+            first: 'editor',
+            second: 'preview',
+            splitPercentage : 50
+          }}
+        />
         </div>
+        
       </div>
     </div>
   );

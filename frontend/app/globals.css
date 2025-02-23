@@ -120,3 +120,121 @@
     animation-delay: 4s;
   }
 }
+
+
+/* Apply dark background and text color to all components inside bp5-dark */
+.bp5-dark {
+  background-color: #0f172a !important; /* Deep dark blue */
+  color: #e2e8f0 !important; /* Light gray text */
+}
+
+/* Mosaic Container */
+.bp5-dark .mosaic-root {
+  background-color: #0f172a !important; 
+  color: #e2e8f0 !important; 
+}
+
+/* Mosaic Tiles */
+.bp5-dark .mosaic-tile {
+  background-color: #1e293b !important; /* Darker background for contrast */
+}
+
+/* Mosaic Window Body */
+.bp5-dark .mosaic-window-body {
+  background-color: #1e293b !important; /* Dark Blue-Gray */
+  color: #e2e8f0 !important; /* Light gray text */
+}
+
+/* Mosaic Window */
+.bp5-dark .mosaic-window {
+  border: 1px solid #334155 !important; /* Subtle border */
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* Toolbar inside Mosaic */
+.bp5-dark .mosaic-window-toolbar {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+/* Buttons inside Mosaic */
+.bp5-dark .bp5-button,
+.bp5-dark .mosaic-window .bp5-button {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
+}
+
+.bp5-dark .bp5-button:hover {
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+/* Inputs & Text Areas */
+.bp5-dark input,
+.bp5-dark textarea {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
+}
+
+/* Placeholder color */
+.bp5-dark input::placeholder,
+.bp5-dark textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Popovers & Dialogs */
+.bp5-dark .bp5-popover,
+.bp5-dark .bp5-dialog {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+/* Blueprint.js Cards */
+.bp5-dark .bp5-card {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+/* Table Styling */
+.bp5-dark .bp5-html-table {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+.bp5-dark .bp5-html-table td,
+.bp5-dark .bp5-html-table th {
+  border-color: #334155 !important;
+}
+
+.bp5-dark .bp5-html-table tr:nth-child(even) {
+  background-color: #1e293b !important;
+}
+
+/* Scrollbars */
+.bp5-dark ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bp5-dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.bp5-dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.bp5-dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+
+/* Fix hover effect on title */
+.bp5-dark .mosaic-window-toolbar:hover .mosaic-window-title {
+  background: #475569;
+  color: #e2e8f0 !important; /* Keep the same color */
+}
