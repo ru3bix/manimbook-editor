@@ -19,6 +19,8 @@ const DB_NAME = 'NotebookDB';
 const STORE_NAME = 'notebook';
 const DB_VERSION = 2;
 
+
+
 const initializeDB = async (): Promise<IDBPDatabase> => {
   return openDB(DB_NAME, DB_VERSION, {
     upgrade(db, oldVersion) {
@@ -31,6 +33,7 @@ const initializeDB = async (): Promise<IDBPDatabase> => {
     },
   });
 };
+
 
 const createEmptyNotebook = (): Notebook => ({
   cells: [],
@@ -63,6 +66,20 @@ export default function Home() {
     chapters: [],
     activeChapterId: null,
   });
+  
+  const handleEvent = (e : MessageEvent<string>) => {
+    console.log(e.data);
+  }
+
+  useEffect(()=>{
+
+    window.addEventListener("message" , handleEvent);
+
+    return ()=>{
+      window.removeEventListener("message" , handleEvent);
+    }
+
+  } , [global.window])
 
 
   const fetchBook = useCallback(async () => {
@@ -377,31 +394,6 @@ export default function Home() {
       await new Promise((resolve) => setTimeout(resolve, 3000));
       setPreviewUrl(preview.url);
 
-      // Poll for status
-      const pollStatus = async (url: string) => {
-        try {
-          while (true) {
-            try {
-              const response = await axios.post('/api/success', {
-                previewUrl: url,
-              });
-              if (response.status === 200) {
-                if (!response.data.done) {
-                  setError(response.data.error);
-                }
-                break;
-              }
-            } catch (e) {
-              // Pass 404 Error
-              await new Promise((resolve) => setTimeout(resolve, 3000)); // 3-second delay
-            }
-          }
-        } catch (error) {
-          console.error('Error while polling status:', error);
-        }
-      };
-
-      await pollStatus(preview.url);
       if (frameRef.current) {
         frameRef.current.src = preview.url;
       }

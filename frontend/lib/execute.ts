@@ -7,10 +7,10 @@ const backendService = async (ipynb : string , bookId : string ) => {
     const notebookJson = new Blob([ipynb], {
       type: "application/json",
     });
-    formData.append("file", notebookJson, "notebook.ipynb");
+    formData.append("file", notebookJson, "notebook.json");
 
     try {
-      const response = await io.put(`/api/execute/${bookId}`, formData, {
+      const response = await io.post(`/api/execute/${bookId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

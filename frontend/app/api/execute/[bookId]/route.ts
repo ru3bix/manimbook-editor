@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest, { params }: { params: { bookId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: { bookId: string } }) {
   const { bookId } = params;
 
   try {
@@ -12,9 +12,9 @@ export async function PUT(req: NextRequest, { params }: { params: { bookId: stri
       data.append(key, value);
     });
 
-    const apiUrl = `https://mbook-backend.kush.in/render/${bookId}`;
+    const apiUrl = `https://sculpin-funny-whale.ngrok-free.app/render/${bookId}`;
 
-    const response = await axios.put(apiUrl, data, {
+    const response = await axios.post(apiUrl, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
