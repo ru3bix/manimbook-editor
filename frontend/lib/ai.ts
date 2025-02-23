@@ -1,26 +1,25 @@
-import { Groq } from "groq-sdk";
-import "dotenv/config"; 
+import { OpenAI } from "openai";
 
-const API_KEY = process.env.NEXT_PUBLIC_GROQ_API_KEY;
-
-if (!API_KEY) {
-    throw new Error("Missing API Key. Set GROQ_API_KEY in .env file.");
-}
-
-const groq = new Groq({ apiKey: API_KEY, dangerouslyAllowBrowser: true });
+const client = new OpenAI({
+    baseURL: "YOUR_LOCAL_SERVER_URL", // Example: "http://localhost:11434/v1"
+    apiKey: "YOUR_API_KEY", // Example: "na" if no API key is needed
+});
 
 export async function getAIResponse(userInput: string): Promise<string> {
     try {
-        const response = await groq.chat.completions.create({
-            model: "llama-3.3-70b-specdec", 
+        const response = await client.chat.completions.create({
+            model: "YOUR_MODEL_NAME", // Example: "meta-llama/Llama-3.2-1B-Instruct"
             messages: [{ role: "user", content: userInput }],
-            temperature: 0.6,
-            max_tokens: 4096,
-            top_p: 0.95,
+            stream: true,
         });
 
-        return response.choices?.[0]?.message?.content || "Error: No response from AI";
+        let finalResponse = "";
+        for await (const chunk of response) {
+            finalResponse += chunk.choices[0]?.delta?.content || "";
+        }
+
+        return finalResponse;
     } catch (error) {
-        throw new Error(`Groq API Error: ${error}`);
+        throw new Error(`OpenAI API Error: ${error}`);
     }
 }
