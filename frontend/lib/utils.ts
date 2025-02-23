@@ -1,6 +1,8 @@
+import welcome from '@/templates/welcome';
 import { Chapter } from '@/types/notebook';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import {v4 as uuidv4} from "uuid";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -36,3 +38,12 @@ export const verifyMBCFile = (chapters : Chapter[]) => {
 
   return true;
 };
+
+
+export const readWelcomeTemplate = (order: number): Chapter => ({
+
+  id: uuidv4(),
+  title: `Welcome to ManimBooks`,
+  notebook: welcome,
+  order,
+});

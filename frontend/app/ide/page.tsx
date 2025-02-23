@@ -10,10 +10,10 @@ import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { backendService } from '@/lib/execute';
 import Preview from '@/components/notebook/preview';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ChapterSidebar } from '@/components/notebook/chapter-sidebar';
-import { verifyMBCFile } from '@/lib/utils';
+import { readWelcomeTemplate, verifyMBCFile } from '@/lib/utils';
+import {useSearchParams} from "next/navigation";
 
 const DB_NAME = 'NotebookDB';
 const STORE_NAME = 'notebook';
@@ -66,13 +66,15 @@ export default function Home() {
     chapters: [],
     activeChapterId: null,
   });
+
+  const searchParams = useSearchParams();
+  const welcome = searchParams.get("welcome");
   
   const handleEvent = (e : MessageEvent<string>) => {
     console.log(e.data);
   }
 
   useEffect(()=>{
-
     window.addEventListener("message" , handleEvent);
 
     return ()=>{
@@ -84,18 +86,23 @@ export default function Home() {
 
   const fetchBook = useCallback(async () => {
     const db = await initializeDB();
+
     const storedBook = await db.get(STORE_NAME, 'book');
+
     if (storedBook) {
       setBook(storedBook);
-    } else {
-      const initialChapter = createNewChapter(0);
-      const newBook = {
-        chapters: [initialChapter],
-        activeChapterId: initialChapter.id,
-      };
-      setBook(newBook);
-      await db.put(STORE_NAME, { id: 'book', ...newBook });
+      if(storedBook.chapters.length === 0) {
+        const initialChapter = welcome?.toLowerCase() === "true"? readWelcomeTemplate(0) : createNewChapter(0) ;
+        const newBook = {
+          chapters: [initialChapter],
+          activeChapterId: initialChapter.id,
+        };
+        setBook(newBook);
+        await db.put(STORE_NAME, { id: 'book', ...newBook });
+      }
     }
+    
+    
   }, []);
 
   const saveBook = useCallback(async (newBook: Book) => {
