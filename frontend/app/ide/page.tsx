@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 import { ChapterSidebar } from '@/components/notebook/chapter-sidebar';
 import { readWelcomeTemplate, verifyMBCFile } from '@/lib/utils';
 import {useSearchParams} from "next/navigation";
+import { exportBook } from '@/lib/book-operations';
 
 const DB_NAME = 'NotebookDB';
 const STORE_NAME = 'notebook';
@@ -411,6 +412,7 @@ export default function Home() {
     }
   }, [activeChapter]);
 
+  // TODO  -> Zustand State Management
   const importBook = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -460,34 +462,7 @@ export default function Home() {
       reader.readAsText(file);
     }
   };
-  
-  const exportBook = () => {
-    const mbcData = {
-      title: fileName,
-      chapters: book.chapters.map(chapter => ({
-        title: chapter.title,
-        notebook: {
-          cells: chapter.notebook.cells.map(cell => ({
-            type: cell.type,
-            content: cell.content,
-            outputs: cell.outputs
-          })),
-          metadata: chapter.notebook.metadata
-        }
-      }))
-    };
-  
-    const blob = new Blob([JSON.stringify(mbcData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${fileName.replace(/\s+/g, '_')}.mbc`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-  
+   
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -495,7 +470,7 @@ export default function Home() {
         onAddCodeCell={() => addCell('code')}
         onAddMarkdownCell={() => addCell('markdown')}
         onImportNotebook={importBook}
-        onExportNotebook={exportBook}
+        onExportNotebook={()=>exportBook(fileName , book)}
         onExecute={executeNotebook}
         executing={executing}
         fileName={fileName}
