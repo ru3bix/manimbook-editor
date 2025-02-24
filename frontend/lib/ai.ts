@@ -1,15 +1,16 @@
 import { OpenAI } from "openai";
 
 const client = new OpenAI({
-    baseURL: "YOUR_LOCAL_SERVER_URL", // Example: "http://localhost:11434/v1"
-    apiKey: "YOUR_API_KEY", // Example: "na" if no API key is needed,
-    dangerouslyAllowBrowser : true
+    // ------> WE CAN USE OPENLLM TO RUN THE AI LOCALLY <----------
+    baseURL: "https://api.groq.com/openai/v1", // Example: "http://localhost:11434/v1" Currently using gorq
+    apiKey: "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", // Example: "na" if no API key is needed,
+    dangerouslyAllowBrowser : true // Just for testing
 });
 
 export async function getAIResponse(userInput: string): Promise<string> {
     try {
         const response = await client.chat.completions.create({
-            model: "YOUR_MODEL_NAME", // Example: "meta-llama/Llama-3.2-1B-Instruct"
+            model: "llama-3.3-70b-versatile", // Example: "meta-llama/Llama-3.2-1B-Instruct"
             messages: [{ role: "user", content: userInput }],
             stream: true,
         });

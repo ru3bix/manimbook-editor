@@ -74,8 +74,6 @@ const AiButton = () => {
       setIsTyping(true);
       const systemPrompt = `Only write manim (python library) code. if someone ask other thing tell them you're here only for manim animation codes. also when you write manim code use this format for your reference.also animate text which shows required info for the animations
       
-      %%manim -qm CircleToSquare
-
       class CircleToSquare(Scene):
           def construct(self):
               blue_circle = Circle(color=BLUE, fill_opacity=0.5)
