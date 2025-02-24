@@ -2,7 +2,8 @@ import { OpenAI } from "openai";
 
 const client = new OpenAI({
     baseURL: "YOUR_LOCAL_SERVER_URL", // Example: "http://localhost:11434/v1"
-    apiKey: "YOUR_API_KEY", // Example: "na" if no API key is needed
+    apiKey: "YOUR_API_KEY", // Example: "na" if no API key is needed,
+    dangerouslyAllowBrowser : true
 });
 
 export async function getAIResponse(userInput: string): Promise<string> {

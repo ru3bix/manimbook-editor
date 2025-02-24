@@ -12,7 +12,7 @@ export async function POST(req: NextRequest, { params }: { params: { bookId: str
       data.append(key, value);
     });
 
-    const apiUrl = `https://sculpin-funny-whale.ngrok-free.app/render/${bookId}`;
+    const apiUrl = `${process.env.BASE_URL}/render/${bookId}`;
 
     const response = await axios.post(apiUrl, data, {
       headers: {
